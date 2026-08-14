@@ -1,0 +1,7 @@
+# Core LangChain packages
+langchain
+langchain-core
+langchain-community
+
+# Testing
+pytest
