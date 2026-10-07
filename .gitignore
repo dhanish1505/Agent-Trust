@@ -27,3 +27,11 @@ build/
 
 # Old module backup folder (superseded by root structure)
 Module 1 ( fin agent )/
+
+__staging/
+__pycache__/
+.venv/
+.env
+
+**/venv/
+*/venv/

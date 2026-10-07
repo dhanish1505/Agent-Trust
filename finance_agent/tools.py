@@ -14,11 +14,14 @@ Return format: a JSON string so the LLM receives structured data.
 
 import json
 from langchain_core.tools import tool
+from agenttrust.gateway import secure_tool
+from agenttrust.agent_auth.models import ActionCategory, ResourceType
 
 from .mock_data import INVOICES
 
 
 @tool
+@secure_tool(ActionCategory.READ, ResourceType.DATABASE, "invoice_id")
 def search_invoice(invoice_id: str) -> str:
     """
     Search for a specific invoice by its unique invoice ID.

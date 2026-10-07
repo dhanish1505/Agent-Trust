@@ -20,6 +20,8 @@ Both tools:
 
 import json
 from langchain_core.tools import tool
+from agenttrust.gateway import secure_tool
+from agenttrust.agent_auth.models import ActionCategory, ResourceType
 
 from .mock_data import CUSTOMERS, SEARCH_FIELDS
 
@@ -29,6 +31,7 @@ from .mock_data import CUSTOMERS, SEARCH_FIELDS
 # --------------------------------------------------------------------------- #
 
 @tool
+@secure_tool(ActionCategory.READ, ResourceType.DATABASE, "customer_id")
 def search_customer(customer_id: str) -> str:
     """
     Search for a customer by their unique customer ID and return a summary.
@@ -70,6 +73,7 @@ def search_customer(customer_id: str) -> str:
 # --------------------------------------------------------------------------- #
 
 @tool
+@secure_tool(ActionCategory.READ, ResourceType.DATABASE, "customer_id")
 def get_customer_details(customer_id: str) -> str:
     """
     Retrieve the full profile for a customer by their unique customer ID.

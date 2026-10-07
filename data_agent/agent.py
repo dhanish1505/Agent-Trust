@@ -46,6 +46,7 @@ from langchain.agents import create_agent
 
 from .llm_provider import get_llm
 from .tools import get_customer_details, search_customer
+from agenttrust.gateway import current_agent_id
 
 
 _SYSTEM_PROMPT = """You are a Data Agent responsible for looking up customer information.
@@ -119,9 +120,12 @@ class DataAgent:
         if not isinstance(query, str) or not query.strip():
             raise ValueError("query must be a non-empty string.")
 
-        result = self._graph.invoke(
-            {"messages": [HumanMessage(content=query)]}
-        )
-
-        # The graph accumulates all messages; the last one is the final response.
-        return result["messages"][-1].content
+        token = current_agent_id.set("data-agent")
+        try:
+            result = self._graph.invoke(
+                {"messages": [HumanMessage(content=query)]}
+            )
+            # The graph accumulates all messages; the last one is the final response.
+            return result["messages"][-1].content
+        finally:
+            current_agent_id.reset(token)

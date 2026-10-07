@@ -44,6 +44,7 @@ from langchain.agents import create_agent
 
 from .llm_provider import get_llm
 from .tools import search_invoice
+from agenttrust.gateway import current_agent_id
 
 
 # The system prompt scopes the agent to its single responsibility.
@@ -111,9 +112,12 @@ class FinanceAgent:
         if not isinstance(query, str) or not query.strip():
             raise ValueError("query must be a non-empty string.")
 
-        result = self._graph.invoke(
-            {"messages": [HumanMessage(content=query)]}
-        )
-
-        # The graph accumulates all messages; the last one is the final response.
-        return result["messages"][-1].content
+        token = current_agent_id.set("finance-agent")
+        try:
+            result = self._graph.invoke(
+                {"messages": [HumanMessage(content=query)]}
+            )
+            # The graph accumulates all messages; the last one is the final response.
+            return result["messages"][-1].content
+        finally:
+            current_agent_id.reset(token)
